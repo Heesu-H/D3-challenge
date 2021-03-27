@@ -23,41 +23,85 @@ var svg = rowGraph.append('svg').attr('height', svgHeight).attr('width', svgWidt
 // appending a group to svg area and translating it to the right and down
 var chartGroup = svg.append('g').attr('transform',`translate(${margin.left},${margin.top})`)
 
+
+//Initial Parameters
+var chosenXAxis = 'In Poverty (%)'
+var chosenYAxis = 'Lacks Healthcare (%)'
+
 //creating scales FUNCTION
 // x scale
-// y scale
+function xScale(data, chosenXAxis) {
+    var xLinearScale = d3.scaleLinear()
+        .domain([d3.min(data, d => d[chosenXAxis]) , d3.max(data, d => d[chosenXAxis])])
+        .range([0,chartWidth])
+
+    return xLinearScale
+}
+// // y scale
+// function yScale(data, chosenYAxis) {
+//     var yLinearScale = d3.scaleLinear()
+//         .domain([d3.min(data, d => d[chosenYAxis]) , d3.max(data, d => d[chosenYAxis])])
+//         .range([0,chartHeight])
+
+//     return yLinearScale
+// }
 
 //creating initial axis functions FUNCTION
+// xAxis 
+function renderXAxis(newXScale, xAxis) {
+    var bottomAxis = d3.axisbottom(newXScale);
 
+    xAxis.transition()
+        .duration(1000)
+        .call(bottomAxis)
+}
+// //yAxis
+// function renderYAxis(newYScale, yAxis) {
+//     var leftAxis = d3.axisleft(newYScale);
+
+//     yAxis.transition()
+//         .duration(1000)
+//         .call(bottomAxis)
+// }
 // appending x axis FUNCTION
 // appending y axis
-//reading in csv data
 
-//group for circles
+//function for updating circles group with transition to new circles
+function renderCircles(circlesGroup,newXScale, chosenXAxis) {
+    circlesGroup.transition()
+        .duration(1000)
+        .attr('cx', newXScale(d[chosenXAxis]))
 
-// group for state abbreviations
+    return circlesGroup;
+}
+
+// Retrieve data from CSV file and create graph
 d3.csv('assets/data/data.csv').then(data => {
 
     //parsing data  
-    var stateAbbr = data.map(d => d.abbr) 
-    var percentPoverty = data.map(d => +d.poverty)
-    var percentLacksHealth = data.map(d =>+d.healthcare)
+    var stateAbbr = data.map(d => d.abbr);
+    //x axis
+    var percentPoverty = data.map(d => +d.poverty);
+    var ageMedian = data.map(d => +d.age);
+    var householdIncome = data.map(d => +d.income);
+    //y axis
+    var percentLacksHealth = data.map(d => +d.healthcare);
+    var obese = data.map(d => +d.obesity);
+    var smokers = data.map(d => +d.smokes);
+
     //checking if values are int
-    console.log(percentLacksHealth)
+    console.log(percentPoverty);
 
-    //creating scales
-    // x scale
-    xScale = d3.scaleLinear().domain([d3.min(percentPoverty)-1,d3.max(percentPoverty)+1]).range([0,chartWidth])
-    console.log(xScale)
-    console.log(d3.extent(percentPoverty))
+    //creating initial scales
+    // xLinearScale
+    var xLinearScale = xScale(data, chosenXAxis);
 
-    // y scale
-    yScale = d3.scaleLinear().domain([d3.min(percentLacksHealth)-2,d3.max(percentLacksHealth)+2]).range([chartHeight,0])
-    console.log(d3.extent(percentLacksHealth))
+    // yLinearScale
+    var yLinearScale = yScale(data, chosenYAxis);
 
     //creating initial axis functions
-    var bottomAxis = d3.axisBottom(xScale)
-    var leftAxis = d3.axisLeft(yScale)
+    var bottomAxis = d3.axisBottom(xLinearScale)
+    var leftAxis = d3.axisLeft(yLinearScale)
 
     // appending x axis    
     chartGroup.append('g')
@@ -95,8 +139,8 @@ d3.csv('assets/data/data.csv').then(data => {
     var xLabelsGroup = chartGroup.append('g')
         .attr("transform", `translate(${chartWidth/2},${chartHeight})`)
 
-    xLabelsGroup.append('text').attr('x',-30).attr('y',32).text("Percent Rate of Poverty")
+    xLabelsGroup.append('text').attr('x',-30).attr('y',32).text("In Poverty (%)")
 
     var yLabelsGroup = chartGroup.append('g').attr('transform',`translate(0,${chartHeight/2}) rotate(-90)`);
-    yLabelsGroup.append('text').attr('x',-100).attr('y',-30).text('Percent Lack of Healthcare')
+    yLabelsGroup.append('text').attr('x',-100).attr('y',-30).text('Lacks Healthcare (%)')
 })
