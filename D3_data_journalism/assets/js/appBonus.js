@@ -32,7 +32,7 @@ var chosenYAxis = 'healthcare';
 // x scale
 function xScale(data, chosenXAxis) {
     var xLinearScale = d3.scaleLinear()
-        .domain( [ d3.min(data, d => d[chosenXAxis])*0.5, d3.max(data, d => d[chosenXAxis]*1.1)] )
+        .domain( [ d3.min(data, d => d[chosenXAxis]), d3.max(data, d => d[chosenXAxis]*1.1)] )
         .range([0,chartWidth])
 
     return xLinearScale
