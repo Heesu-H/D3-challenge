@@ -71,6 +71,7 @@ function renderYAxis(newYScale, yAxis) {
 // appending y axis
 
 //function for updating circles group with transition to new circles
+//x axis 
 function renderXCircles(circlesGroup,newXScale, chosenXAxis) {
     circlesGroup.transition()
         .duration(1000)
@@ -78,7 +79,7 @@ function renderXCircles(circlesGroup,newXScale, chosenXAxis) {
 
     return circlesGroup;
 }
-
+//y axis 
 function renderYCircles(circlesGroup,newYScale,chosenYAxis) {
     circlesGroup.transition()
         .duration(1000)
@@ -87,6 +88,23 @@ function renderYCircles(circlesGroup,newYScale,chosenYAxis) {
     return circlesGroup;
 }
 
+//function for updating abbrGroup
+// x axis
+function abbrGroupXAxis(abbrGroupX,newXScale,chosenXAxis) {
+    abbrGroupX.transition()
+        .duration(1000)
+        .attr('x', d=> newXScale(d[chosenXAxis]))
+
+    return abbrGroupX
+}
+// y axis
+function abbrGroupYAxis(abbrGroupY,newYScale,chosenYAxis) {
+    abbrGroupY.transition()
+        .duration(1000)
+        .attr('y', d=> newYScale(d[chosenYAxis]))
+
+    return abbrGroupY
+}
 
 // Retrieve data from CSV file and create graph
 d3.csv('assets/data/data.csv').then(data => {
@@ -138,7 +156,7 @@ d3.csv('assets/data/data.csv').then(data => {
         .classed('stateCircle',true);
 
     // group for state abbreviations
-    chartGroup.append('g').selectAll('text')
+    var abbrGroup = chartGroup.append('g').selectAll('text')
         .data(data)
         .enter()
         .append('text')
@@ -208,7 +226,10 @@ d3.csv('assets/data/data.csv').then(data => {
 
                 //updating circles with new x values
                 circlesGroup = renderXCircles(circlesGroup,xLinearScale,chosenXAxis);
-                
+            
+                //updating abbreviations locations on x axis
+                abbrGroup = abbrGroupXAxis(abbrGroup,xLinearScale,chosenXAxis)
+
                 if (chosenXAxis === 'age') {
                     ageXLabel
                         .classed('active',true)
@@ -259,6 +280,9 @@ d3.csv('assets/data/data.csv').then(data => {
 
                 //updating circles with new x values
                 circlesGroup = renderYCircles(circlesGroup,yLinearScale,chosenYAxis);
+
+                //updating abbreviations locations on x axis
+                abbrGroup = abbrGroupYAxis(abbrGroup,yLinearScale,chosenYAxis)
                 
                 if (chosenYAxis === 'smokes') {
                     healthcareYLabel
@@ -296,7 +320,6 @@ d3.csv('assets/data/data.csv').then(data => {
         // end of y axis on click function
         })
 
-    
-
 //end of 'then'
 })
+
