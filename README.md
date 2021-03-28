@@ -1,6 +1,7 @@
 # D3-challenge
 This project is to create a scatter plot using D3.js based on data taken from the 2014 American Community Survey (ACS) 1-year estimates to show any trends between different variables.
-[Link to visualisation] (https://heesu-h.github.io/D3-challenge/D3_data_journalism/)
+
+[Link to visualisation](https://heesu-h.github.io/D3-challenge/D3_data_journalism/)
 
 ## Objectives
 - Create a scatter plot to visualise relationships between different variables concerning health.
