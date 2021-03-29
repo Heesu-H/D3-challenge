@@ -3,7 +3,7 @@
 rowGraph = d3.select('.container').append('div').attr("class","row graph")
 
 //defining svg area 
-var svgHeight = 660;
+var svgHeight = 600;
 var svgWidth = 960;
 
 //defining chart's margins as an object
@@ -32,7 +32,7 @@ var chosenYAxis = 'healthcare';
 // x scale
 function xScale(data, chosenXAxis) {
     var xLinearScale = d3.scaleLinear()
-        .domain( [ d3.min(data, d => d[chosenXAxis])*0.5, d3.max(data, d => d[chosenXAxis]*1.1)] )
+        .domain( [ d3.min(data, d => d[chosenXAxis])*0.85, d3.max(data, d => d[chosenXAxis]*1.1)] )
         .range([0,chartWidth])
 
     return xLinearScale
@@ -152,7 +152,7 @@ d3.csv('assets/data/data.csv').then(data => {
         .append('circle')
         .attr('cx', d => xLinearScale(d[chosenXAxis]))
         .attr('cy', d => yLinearScale(d[chosenYAxis]))
-        .attr("r", 20)
+        .attr("r", 15)
         .classed('stateCircle',true);
 
     // group for state abbreviations
@@ -224,6 +224,10 @@ d3.csv('assets/data/data.csv').then(data => {
     chartGroup.call(toolTip);
 
     circlesGroup.on('mouseover', d => {
+        toolTip.show(d,this);
+    }).on('mouseout', d => toolTip.hide(d));
+
+    abbrGroup.on('mouseover', d => {
         toolTip.show(d,this);
     }).on('mouseout', d => toolTip.hide(d));
 
